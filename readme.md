@@ -8,14 +8,10 @@
 
 ##Table of contents
 
-[1.1. transfer ether to user](transfer ether to user)
-
-[1.2. transfer ether to contract](transfer ether to contract)
-
-[2.1. transfer tokens with real contract](transfer tokens with real contract)
-
-[2.2. transfer tokens with test contract](transfer tokens with test contract)
-
+1. How to transfer ether
+2. How to transfer tokens
+3. How to interact with the interface
+4. How to read events
 
 ---
 #### 1. How to transfer ether
@@ -33,7 +29,7 @@ def test_transfer_ether_to_user(accounts):
     assert balanceBefore + value == balanceAfter
 ```
 
-#### 1.2. transfer ether to contract
+##### 1.2. transfer ether to contract
 
 ##### file tests/conftest.py:
 ```python
@@ -133,7 +129,26 @@ def test_wrap_real_contract(interface):
     assert totalSupply == 4627357422247550
 ```
 
-#### 3. How to interact with the interface
+#### 4. How to read events
+
+```python
+def test_read_event(usdt, alice):
+    value = 1000*10**18;
+
+    aliceBeforeBalance = usdt.balanceOf(alice)
+    assert aliceBeforeBalance == 0
+
+    tx = usdt._mint_for_testing(alice, value)
+    assert tx.events[0].name == 'Transfer'
+
+    assert tx.events['Transfer']['_value'] == value
+    assert tx.events['Transfer']['_from'] == '0x0000000000000000000000000000000000000000'
+    assert tx.events['Transfer']['_to'] == alice
+
+    aliceAfterBalance = usdt.balanceOf(alice)
+    assert aliceAfterBalance == value
+```
+
 
 
 
