@@ -9,6 +9,7 @@ contract BrownieInExamples is ERC20 {
     uint256 public vestingPeriod = 30 days;
     uint256 public vestingAmount = 1000 * 10**18;
     uint256 public vestingEnd;
+    uint256 public currentGasPrice;
 
     mapping(address => uint256) public lastVestingPayout;
 
@@ -30,5 +31,6 @@ contract BrownieInExamples is ERC20 {
         require(currentTime > lastVestingPayout[msg.sender] + duration, "The last payment was less than a one day");
         lastVestingPayout[msg.sender] = currentTime;
         _mint(msg.sender, vestingAmount);
+        currentGasPrice = tx.gasprice;
     }
 }

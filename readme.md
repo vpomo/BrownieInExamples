@@ -12,7 +12,8 @@
 2. How to transfer tokens
 3. How to interact with the interface
 4. How to read events
-
+5. How to change blockchain time
+6. How to change blockchain gas price
 ---
 #### 1. How to transfer ether
 
@@ -149,6 +150,39 @@ def test_read_event(usdt, alice):
     assert aliceAfterBalance == value
 ```
 
+#### 5. How to change blockchain time
+
+```python
+def test_change_time(chain, bob, exampleContract):
+    value = 1000*10**18;
+    bobBeforeBalance = exampleContract.balanceOf(bob)
+    exampleContract.getVestingToken({'from': bob})
+
+    with reverts("The last payment was less than a one day"):
+        exampleContract.getVestingToken({'from': bob})
+
+    chain.sleep(60*60*24 + 10)
+
+    exampleContract.getVestingToken({'from': bob})
+    bobAfterBalance = exampleContract.balanceOf(bob)
+
+    assert bobAfterBalance - value * 2 == bobBeforeBalance
+```
+
+
+#### 6. How to change blockchain gas price
+
+```python
+def test_change_gasprice(exampleContract):
+    beforeGasPrice = exampleContract.currentGasPrice()
+    assert beforeGasPrice == 0
+
+    gas_price("65 gwei")
+    exampleContract.getVestingToken()
+    
+    afterGasPrice = exampleContract.currentGasPrice()
+    assert afterGasPrice == 65000000000
+```
 
 
 
