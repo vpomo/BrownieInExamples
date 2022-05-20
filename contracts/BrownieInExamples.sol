@@ -10,6 +10,7 @@ contract BrownieInExamples is ERC20 {
     uint256 public vestingAmount = 1000 * 10**18;
     uint256 public vestingEnd;
     uint256 public currentGasPrice;
+    uint256 public myEther;
 
     mapping(address => uint256) public lastVestingPayout;
 
@@ -19,6 +20,10 @@ contract BrownieInExamples is ERC20 {
     constructor(address alice) ERC20("ExampleToken", "EXT") {
         _mint(alice, 1_000_000e18);
         vestingEnd = block.timestamp + vestingPeriod;
+    }
+
+    function receiveEther() external payable {
+        myEther += msg.value;
     }
 
     function etherBalance() external view returns(uint256) {
